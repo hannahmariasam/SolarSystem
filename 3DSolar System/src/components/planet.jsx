@@ -16,12 +16,17 @@ export default function Planet({
 }) {
   const meshRef = useRef();
   const texture = useLoader(THREE.TextureLoader, textureUrl);
-  const angleRef = useRef(Math.random() * Math.PI * 2);
+
+  const orbitAngle = useRef(Math.random() * Math.PI * 2);
 
   useFrame(() => {
-    angleRef.current += speed * 0.01;
-    meshRef.current.position.x = distance * Math.cos(angleRef.current);
-    meshRef.current.position.z = distance * Math.sin(angleRef.current);
+    // 🌍 Orbit around the Sun
+    orbitAngle.current += speed * 0.01;
+
+    meshRef.current.position.x = distance * Math.cos(orbitAngle.current);
+    meshRef.current.position.z = distance * Math.sin(orbitAngle.current);
+
+    // 🌎 Planet rotation
     meshRef.current.rotation.y += 0.01;
   });
 
@@ -32,7 +37,7 @@ export default function Planet({
         <meshStandardMaterial map={texture} />
       </mesh>
 
-      {/* Show tilt + axis if this planet is selected */}
+      {/* Show axis only if selected */}
       {selected?.name === name && <PlanetAxis size={size} tilt={tilt} />}
     </group>
   );
