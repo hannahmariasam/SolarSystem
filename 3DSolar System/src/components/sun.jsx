@@ -1,17 +1,45 @@
 import React, { useRef } from "react";
 import * as THREE from "three";
-import { useLoader } from "@react-three/fiber"; // ✅ This is required
+import { useLoader } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
+
 export default function Sun({ onClick }) {
   const texture = useLoader(THREE.TextureLoader, "/textures/sun.jpg");
   const sunRef = useRef();
-  
+
+  const info = {
+    type: "Star (G-type Main Sequence)",
+    diameter: "1,391,000 km",
+    surfaceTemp: "5,500°C",
+    coreTemp: "15,000,000°C",
+    age: "4.6 billion years",
+    composition: "Hydrogen (74%), Helium (24%)",
+    lightTravelTime: "8 min 20 sec",
+    description:
+      "The Sun is the central star of the Solar System. Its gravity holds the planets in orbit, and its fusion reactions power all life on Earth."
+  };
 
   return (
     <group>
+      {/* MAIN SUN (clickable) */}
       <mesh
         ref={sunRef}
-        onClick={() => onClick({ name: "Sun", size: 3.5, ref: sunRef })}
+       onClick={() =>
+  onClick({
+    name: "Sun",
+    size: 3.5,
+    ref: sunRef,
+    tilt: 0,
+    info: {
+      type: "Star",
+      diameter: "1,391,000 km",
+      surfaceTemp: "5,500°C",
+      gravity: "274 m/s²",
+      description: "The Sun is the center of the Solar System and the primary source of light and energy."
+    }
+  })
+}
+
       >
         <sphereGeometry args={[3.5, 64, 64]} />
         <meshStandardMaterial
@@ -23,7 +51,8 @@ export default function Sun({ onClick }) {
         />
       </mesh>
 
-      <mesh>
+      {/* GLOW (non-clickable) */}
+      <mesh raycast={() => null}>
         <sphereGeometry args={[3.8, 64, 64]} />
         <meshBasicMaterial
           color={new THREE.Color(0xffcc66)}
@@ -41,3 +70,4 @@ export default function Sun({ onClick }) {
     </group>
   );
 }
+
