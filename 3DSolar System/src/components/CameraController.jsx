@@ -48,3 +48,4 @@ export default function CameraController({ target, planetSize, zoomOutTrigger })
 
   return null;
 }
+
