@@ -1,51 +1,80 @@
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 export default function CameraController({ target, planetSize, zoomOutTrigger }) {
   const { camera } = useThree();
-  const worldPos = useRef(new THREE.Vector3());
-  const offset = useRef(new THREE.Vector3());
-  const isZoomingOut = useRef(false);
 
-  // Trigger one-time zoom out when button is clicked
-  if (zoomOutTrigger) {
-    isZoomingOut.current = true;
-  }
+  const targetPos = useRef(new THREE.Vector3());
+  const desiredPos = useRef(new THREE.Vector3());
+  const lastTarget = useRef(null);
+
+  const zoomingOut = useRef(false);
+  const freeMode = useRef(true);   // ⭐ NEW — allows OrbitControls to work
+
+  // When a planet or moon is clicked
+  useEffect(() => {
+    if (target) {
+      freeMode.current = false;  // camera is locked to focus
+      zoomingOut.current = false;
+      lastTarget.current = target;
+    }
+  }, [target]);
+
+  // When zoom-out button is pressed
+  useEffect(() => {
+    if (!target && lastTarget.current) {
+      zoomingOut.current = true;
+      freeMode.current = false;   // still controlling camera until zoom-out ends
+    }
+  }, [zoomOutTrigger]);
 
   useFrame(() => {
+    // ============================================
+    // 1) Follow selected planet (zoom-in)
+    // ============================================
     if (target) {
-      // Zoom in on selected planet/Sun
-      target.getWorldPosition(worldPos.current);
-      const distanceMultiplier = target.userData.isSun ? 12 : planetSize * 5;
+      target.getWorldPosition(targetPos.current);
 
-      offset.current.set(
-        worldPos.current.x + distanceMultiplier,
-        worldPos.current.y + distanceMultiplier / 2,
-        worldPos.current.z + distanceMultiplier
+      const distance = planetSize * 6;
+
+      desiredPos.current.set(
+        targetPos.current.x + distance,
+        targetPos.current.y + distance * 0.4,
+        targetPos.current.z + distance
       );
 
-      camera.position.lerp(offset.current, 0.05);
-      camera.lookAt(worldPos.current);
-
-      // Stop zoom out if it was active
-      isZoomingOut.current = false;
-
-    } else if (isZoomingOut.current) {
-      // Slight zoom out: move camera away from its current target, not toward Sun
-      // Calculate vector from last selected planet to camera
-      const lastTargetPos = worldPos.current.clone();
-      const zoomDirection = camera.position.clone().sub(lastTargetPos).normalize();
-
-      // Move camera slightly along that vector
-      camera.position.addScaledVector(zoomDirection, 5); // tweak distance
-      camera.lookAt(lastTargetPos); // keep looking at last planet
-      isZoomingOut.current = false; // only do once
+      camera.position.lerp(desiredPos.current, 0.08);
+      camera.lookAt(targetPos.current);
+      return;
     }
 
-    // Otherwise (no target, no zooming) do nothing → free orbit controls
+    // ============================================
+    // 2) One-time zoom out
+    // ============================================
+    if (zoomingOut.current && lastTarget.current) {
+      lastTarget.current.getWorldPosition(targetPos.current);
+
+      const dir = camera.position.clone().sub(targetPos.current).normalize();
+      camera.position.addScaledVector(dir, 4);
+
+      camera.lookAt(targetPos.current);
+
+      zoomingOut.current = false;
+
+      // ⭐ IMPORTANT — After finishing zoom-out, free camera!
+      freeMode.current = true;
+      return;
+    }
+
+    // ============================================
+    // 3) Free movement — OrbitControls take over
+    // ============================================
+    if (freeMode.current) {
+      // Do nothing → allows OrbitControls to work normally
+      return;
+    }
   });
 
   return null;
 }
-
