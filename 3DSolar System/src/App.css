@@ -40,3 +40,61 @@
 .read-the-docs {
   color: #888;
 }
+
+/* FULL SCREEN FIX */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: black !important;
+}
+
+/* Fullscreen layout fix */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: black !important;
+}
+
+/* Remove Vite default layout that caused shrinking */
+#root {
+  max-width: none !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+/* Hover label styling */
+.hover-label {
+  font-size: 26px !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  padding: 8px 14px !important;
+  border-radius: 10px !important;
+  border: 2px solid #ffffff !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+  transform: translate(-50%, -160%) !important;
+}
+
+/* Prevent Drei Html from shrinking */
+.drei-html {
+  transform: scale(1.2) !important;
+}
+.belt-label {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: white !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  border: 1px solid white !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
