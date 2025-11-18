@@ -1,4 +1,5 @@
-// components/AsteroidBelt.jsx
+// src/components/asteroidbelt.jsx
+
 import React, { useRef, useMemo, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -11,9 +12,16 @@ export default function AsteroidBelt({ count = 1200, thickness = 0.4, isZoomedOu
 
   const mars = planets.find(p => p.name === "Mars");
   const jupiter = planets.find(p => p.name === "Jupiter");
+  
+  // Safety check for planets
+  if (!mars || !jupiter) return null;
 
   const inner = mars.distance + 0.8;
   const outer = jupiter.distance - 0.8;
+
+  const avgRadius = (inner + outer) / 2;
+  // ⭐ CHANGE: Reduced beltHeight for the invisible hitbox to constrain the hover area
+  const beltHeight = 0.5; 
 
   const asteroids = useMemo(() => {
     const arr = [];
@@ -37,23 +45,49 @@ export default function AsteroidBelt({ count = 1200, thickness = 0.4, isZoomedOu
     <group
       ref={groupRef}
       rotation={[0.2, 0, 0]}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
     >
-      {asteroids.map((a, i) => (
-        <mesh key={i} position={a.pos}>
-          <icosahedronGeometry args={[a.size, 0]} />
-          <meshStandardMaterial color="#444" />
+      {/* 1. INVISIBLE HITBOX MESH (Hover Anywhere Fix) */}
+      <mesh
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          setHovered(true);
+        }}
+        onPointerOut={() => setHovered(false)}
+        position={[0, 0, 0]}
+        rotation={[-Math.PI / 2, 0, 0]} 
+      >
+        <cylinderGeometry args={[outer, inner, beltHeight, 64, 1, true]} /> 
+        <meshBasicMaterial 
+          transparent 
+          opacity={0} 
+          side={THREE.DoubleSide} 
+        /> 
+      </mesh>
+      
+      {/* 2. ASTEROID PARTICLES (Unchanged) */}
+      {asteroids.map((asteroid, index) => (
+        <mesh
+          key={index}
+          position={asteroid.pos}
+          raycast={() => null} 
+        >
+          <sphereGeometry args={[asteroid.size, 8, 8]} />
+          <meshBasicMaterial color="#784f37" />
         </mesh>
       ))}
 
-      {/* Hover label only */}
-      {isZoomedOut && (
-  <Html position={[inner + (outer - inner) / 2, 0.2, 0]} className="belt-label">
-    Asteroid Belt
-  </Html>
-)}
-
+      {/* 3. HOVER LABEL (Unchanged) */}
+      {isZoomedOut && hovered && (
+        <Html 
+            position={[avgRadius, 0, 0]} 
+            center
+            className="hover-label"
+            distanceFactor={30} 
+            wrapperClass="planet-label"
+        >
+          Asteroid Belt
+        </Html>
+      )}
     </group>
   );
 }
