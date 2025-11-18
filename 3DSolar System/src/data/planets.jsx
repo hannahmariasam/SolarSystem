@@ -28,6 +28,7 @@ export const planets = [
     type: "Rocky Planet",
     averageDistanceFromSun: "0.39 AU",
     diameterComparedToEarth: "0.38",
+    gravity:"3.7 m/s²",
     madeOf: "Rock and metal",
     atmosphere: "None",
     moons: "None",
@@ -58,6 +59,7 @@ export const planets = [
   type: "Rocky Planet",
   averageDistanceFromSun: "0.72 AU",
   diameterComparedToEarth: "0.95",
+   gravity:"8.87 m/s²",
   madeOf: "Rock and metal",
   atmosphere: "Carbon dioxide and nitrogen",
   moons: "None",
@@ -83,10 +85,12 @@ export const planets = [
     size: 0.75,
     distance: 10,
     speed: 0.035,
+     
     position: { x: 10, y: 0, z: 0 },
    info: {
   type: "Terrestrial Planet",
   averageDistanceFromSun: "1 AU (93 million miles)",
+  gravity:"9.8  m/s²",
   diameter: "7,900 miles (12,700 km)",
   madeOf: "Rock and metal",
   atmosphere: "Nitrogen, oxygen, and carbon dioxide",
@@ -110,7 +114,8 @@ moons: [
     textureUrl: "/textures/moon.jpg",
     size: 0.22,
     distance: 1.5,   // close to Earth but not touching the equator
-    speed: 0.15      // slow orbit
+    speed: 0.15 ,     // slow orbit
+   
   }
 ],
 
@@ -124,11 +129,13 @@ moons: [
   size: 0.6,
   distance: 12,
   speed: 0.03,
+
   position: { x: 12, y: 0, z: 0 },
   info: {
     type: "Rocky Planet",
     averageDistanceFromSun: "1.5 AU",
     diameterComparedToEarth: "0.53",
+     gravity:"3.73 m/s²",
     madeOf: "Mostly rock",
     atmosphere: "Carbon dioxide, nitrogen, argon",
     moons: "2 (Phobos & Deimos)",
@@ -153,11 +160,13 @@ moons: [
   size: 1.5,
   distance: 15,
   speed: 0.025,
+  
   position: { x: 15, y: 0, z: 0 },
   info: {
     type: "Gas Giant",
     averageDistanceFromSun: "5.2 AU",
     diameterComparedToEarth: "11",
+     gravity:"24.79 m/s²",
     madeOf: "Hydrogen and helium",
     atmosphere: "Hydrogen and helium",
     moons: "79+ (scientists continue to find more)",
@@ -182,11 +191,13 @@ moons: [
   size: 1.2,
   distance: 19,
   speed: 0.02,
+   
   position: { x: 19, y: 0, z: 0 },
   info: {
     type: "Gas Giant",
     averageDistanceFromSun: "9.5 AU",
     diameterComparedToEarth: "9.1",
+    gravity:"10.44 m/s²",
     madeOf: "Hydrogen and helium",
     atmosphere: "Hydrogen and helium",
     moons: "82",
@@ -211,11 +222,13 @@ moons: [
   size: 1,
   distance: 23,
   speed: 0.018,
+ 
   position: { x: 23, y: 0, z: 0 },
   info: {
     type: "Ice Giant",
     averageDistanceFromSun: "19 AU",
     diameterComparedToEarth: "4.0",
+      gravity:"8.69 m/s²",
     madeOf: "Hydrogen, helium, and methane",
     atmosphere: "Hydrogen, helium, and methane",
     moons: "27",
@@ -235,39 +248,64 @@ moons: [
 },
 
   {
-    name: "Neptune",
-    textureUrl: "/textures/neptune.jpg",
-    size: 1,
-    distance: 27,
-    speed: 0.015,
-    position: { x: 27, y: 0, z: 0 },
-    info: {
-      type: "Ice Giant",
-      diameter: "49,244 km",
-      description:
-        "Neptune is the farthest planet from the Sun with supersonic winds and a cold methane-rich atmosphere.",
-    },
+  name: "Neptune",
+  textureUrl: "/textures/neptune.jpg",
+  size: 1, // Diameter compared to Earth
+  distance: 30.06, // Average distance from Sun (AU)
+  speed: 0.006, // Adjusted orbital speed for simulation
+  
+  position: { x: 30.06, y: 0, z: 0 },
+  info: {
+    type: "Ice Giant",
+    averageDistanceFromSun: "30.1 AU",
+    diameterComparedToEarth: "3.88",
+     gravity:"11.15 m/s²",
+    madeOf: "Hydrogen and helium",
+    atmosphere: "Hydrogen, helium, and methane",
+    moons: "14 (Triton is the largest)",
+    rings: "Yes (faint, made of ice particles and dust)",
+    temperature: "-373°F (-225°C)",
+    dayLength: "1 day = 16 Earth hours",
+    yearLength: "1 year = 165 Earth years",
+    whatIsItLike:
+      "Neptune is a **dark, cold, and extremely windy world**. It has the fastest winds in the solar system, which can reach up to 1,200 miles per hour. Its deep blue color comes from methane in the atmosphere.",
+    spacecraftVisited:
+      "Voyager 2 (only spacecraft to visit Neptune)",
+    facts:
+      "Neptune was the **first planet located by mathematical prediction** rather than by empirical observation.",
+    description:
+      `Neptune is the eighth and most distant major planet orbiting our Sun. Its atmosphere contains methane, which absorbs red light, giving the planet its blue color.`
   },
-  {
+},
+ {
   name: "Pluto",
   textureUrl: "/textures/pluto.jpg",
-  size: 0.18,              // small size (realistic)
-  distance: 32,            // slightly beyond Neptune
-  speed: 0.012,            // slow orbit
-  position: { x: 32, y: 0, z: 0 },
-  tilt: 119.5,             // Pluto is tilted upside down
+  size: 0.18, // Diameter compared to Earth
+  distance: 39.5, // Average distance from Sun (AU)
+  speed: 0.004, // Adjusted orbital speed for simulation
+  
+  position: { x: 39.5, y: 0, z: 0 },
   info: {
     type: "Dwarf Planet",
-    diameter: "2,377 km",
-    rotationPeriod: "6.4 Earth days",
-    revolutionPeriod: "248 Earth years",
-    axisTilt: "119.5°",
-    surfaceTemp: "-229°C",
-    atmosphere: "Nitrogen, Methane, Carbon Monoxide",
-    moons: "5 (Charon, Styx, Nix, Kerberos, Hydra)",
+    averageDistanceFromSun: "39.5 AU",
+    diameterComparedToEarth: "0.18",
+     gravity:"0.62 m/s²",
+    madeOf: "Rock and ice",
+    atmosphere: "Nitrogen, methane, and carbon monoxide (thin and transient)",
+    moons: "5 (Charon is the largest)",
+    rings: "None",
+    temperature: "-387 to -369°F (-233 to -223°C)",
+    dayLength: "1 day = 6.4 Earth days",
+    yearLength: "1 year = 248 Earth years",
+    whatIsItLike:
+      "Pluto is a cold, distant world with a varied terrain of **mountains, valleys, and glaciers**. Its atmosphere freezes and collapses onto its surface as it moves farther away from the Sun.",
+    spacecraftVisited:
+      "New Horizons (first and only spacecraft to visit Pluto)",
+    facts:
+      "Pluto was reclassified as a **dwarf planet in 2006**. It is part of the Kuiper Belt, a region of icy bodies beyond Neptune.",
     description:
-      "Pluto is a dwarf planet located in the Kuiper Belt. It has a thin atmosphere that freezes and falls as snow when it moves farther from the Sun. Its largest moon, Charon, is so big that Pluto and Charon orbit each other like a binary system."
-  }
-},
+      `Pluto is the largest known dwarf planet in the Solar System, famous for its heart-shaped region named Tombaugh Regio.`
+  },
+}
 
 ];
