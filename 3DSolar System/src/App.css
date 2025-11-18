@@ -70,6 +70,7 @@ html, body, #root {
 
 /* Hover label styling */
 .hover-label {
+  z-index: 9999 !important;
   font-size: 26px !important;
   font-weight: 900 !important;
   color: #ffffff !important;
@@ -98,3 +99,68 @@ html, body, #root {
   white-space: nowrap !important;
 }
 
+/* --- Gravity HUD Styling for App.css --- */
+
+.gravity-hud {
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background: #1c1c1c;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.gravity-hud h4 {
+  margin: 0 0 10px 0;
+  color: #ffcc00; /* Gold */
+  font-size: 16px;
+  text-align: center;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+}
+
+.hud-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.gravity-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+}
+
+.bar-label {
+  font-weight: bold;
+  color: #aaa;
+}
+
+.bar-value {
+  font-weight: 900;
+  font-size: 16px;
+  color: #00ff7f; /* Bright green */
+}
+
+.comparison {
+  margin-top: 5px;
+  font-weight: bold;
+  text-align: center;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.comparison.heavier {
+  color: #ff7777; /* Reddish */
+  background: rgba(255, 119, 119, 0.1);
+  border: 1px solid #ff7777;
+}
+
+.comparison.lighter {
+  color: #88eeff; /* Bluish */
+  background: rgba(136, 238, 255, 0.1);
+  border: 1px solid #88eeff;
+}
