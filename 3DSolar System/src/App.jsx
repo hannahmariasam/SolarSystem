@@ -1,20 +1,29 @@
 import React, { useState, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars, Html } from "@react-three/drei";
+import { OrbitControls, Stars } from "@react-three/drei";
+
 import Sun from "./components/sun";
 import Planet from "./components/planet";
 import OrbitRing from "./components/OrbitRing";
 import Quiz from "./components/Quiz";
 import CameraController from "./components/CameraController";
+import AsteroidBelt from "./components/asteroidbelt";
+import KuiperBelt from "./components/kuiperbelt";
+
+import "./App.css";
 import { planets } from "./data/planets";
 
 export default function App() {
   const [selected, setSelected] = useState(null);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [zoomOutTrigger, setZoomOutTrigger] = useState(false);
+  const [isZoomedOut, setIsZoomedOut] = useState(true);
+  const [quizOpen, setQuizOpen] = useState(false);
+
 
 
   return (
+    <>
     <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "black" }}>
       <div style={{ flex: 1 }}>
         <Canvas camera={{ position: [0, 12, 60], fov: 60 }}>
@@ -24,40 +33,61 @@ export default function App() {
           <Stars radius={150} depth={60} count={5000} factor={4} fade speed={1} />
 
           <Suspense fallback={null}>
-            {/* Camera follows selected planet */}
-           <CameraController
-  target={selected?.ref ? selected.ref.current : null}
-  planetSize={selected ? selected.size : 1}
-/>
+
+            {/* CAMERA */}
+          <CameraController 
+            target={selected?.ref ? selected.ref.current : null}
+            planetSize={selected?.size ?? 1}
+            zoomOutTrigger={zoomOutTrigger}
+          />
 
 
 
-            {/* Sun */}
-          <Sun onClick={(sunData) => setSelected(sunData)} />
+            {/* SUN */}
+            <Sun
+              onClick={(data) => {
+                setSelected(data);
+                setIsZoomedOut(false);
+              }}
+            />
 
+            {/* ASTEROID BELT */}
+            <AsteroidBelt />
 
+            {/* KUIPER BELT */}
+            <KuiperBelt />
 
-            {/* Planets */}
-           {planets.slice(1).map((p, i) => (
-          <React.Fragment key={i}>
-          <OrbitRing radius={p.distance} />
-          <Planet {...p} onClick={setSelected} selected={selected} />
-          </React.Fragment>
-          ))}
+            {/* PLANETS */}
+            {planets.slice(1).map((p, i) => (
+              <React.Fragment key={i}>
+                <OrbitRing radius={p.distance} />
+                <Planet
+                  {...p}
+                  selected={selected}
+                  isZoomedOut={isZoomedOut}
+                  onClick={(data) => {
 
+                    if (data.noZoom) {
+                      // ⭐ Moon clicked — NO CAMERA MOVEMENT
+                      setSelected(data);
+                      return;
+                    }
 
-            {/* Optional 3D overlay for selected planet */}
-            
-          
+                    // ⭐ Normal planet or Sun click
+                    setSelected(data);
+                    setIsZoomedOut(false);
+                  }}
+                />
+              </React.Fragment>
+            ))}
+
           </Suspense>
 
           <OrbitControls enableDamping dampingFactor={0.05} enabled={!selected} />
-
-
         </Canvas>
       </div>
 
-      {/* Info Panel */}
+      {/* INFO PANEL */}
       <div
         style={{
           width: 360,
@@ -69,61 +99,55 @@ export default function App() {
         }}
       >
         <div style={{ padding: 20, color: "white" }}>
-          <h2>🌞 Solar System Explorer</h2>
+  <h2>🌞 Solar System Explorer</h2>
 
-          {selected ? (
-  <>
-    <h3>{selected.name}</h3>
-    {selected.info ? (
-      <>
-        <p><b>Type:</b> {selected.info.type}</p>
-        <p><b>Diameter:</b> {selected.info.diameter}</p>
-        {selected.info.rotationPeriod && <p><b>Rotation Period:</b> {selected.info.rotationPeriod}</p>}
-        {selected.info.revolutionPeriod && <p><b>Revolution Period:</b> {selected.info.revolutionPeriod}</p>}
-        {selected.info.axisTilt && <p><b>Axis Tilt:</b> {selected.info.axisTilt}</p>}
-        {selected.info.gravity && <p><b>Gravity:</b> {selected.info.gravity}</p>}
-        {selected.info.moons && <p><b>Moons:</b> {selected.info.moons}</p>}
-        {selected.info.surfaceTemp && <p><b>Surface Temp:</b> {selected.info.surfaceTemp}</p>}
-        {selected.info.atmosphere && <p><b>Atmosphere:</b> {selected.info.atmosphere}</p>}
-        <p
-  style={{ marginTop: 10 }}
-  dangerouslySetInnerHTML={{ __html: selected.info.description }}
-></p>
+  {selected ? (
+    <>
+      <h3>{selected.name}</h3>
 
-      </>
-    ) : (
-      <p>No additional data available.</p>
-    )}
-  </>
-) : (
-  <p>Click a planet to view details!</p>
-)}
+      {selected.info ? (
+        <>
+          {Object.entries(selected.info).map(([key, val]) =>
+            key !== "description" ? (
+              <p key={key}>
+                <b>{key.replace(/([A-Z])/g, " $1")}:</b> {val}
+              </p>
+            ) : null
+          )}
 
+          <p
+            style={{ marginTop: 10 }}
+            dangerouslySetInnerHTML={{ __html: selected.info.description }}
+          ></p>
+        </>
+      ) : (
+        <p>No information available.</p>
+      )}
+    </>
+  ) : (
+    <p>Click a planet to view details!</p>
+  )}
 
+  {/* ❌ DELETE THE OLD INLINE QUIZ COMPONENT */}
+  {/* <Quiz />  ← REMOVE THIS! */}
 
-          <Quiz />
-        
-    
+  {/* ✔ Start Quiz Button */}
+  <button onClick={() => setQuizOpen(true)}>Start Quiz</button><br></br><br></br>
+  <button
+  onClick={() => {
+    setSelected(null);
+    setIsZoomedOut(true);   // ⭐ ensures labels return
+    setZoomOutTrigger(p => !p);
+  }}
+>
+  🔭 Zoom Out
+</button>
 
+</div>
 
-        <button
-           onClick={() => {
-          setSelected(null);                    // deselect planet/Sun
-          setZoomOutTrigger(prev => !prev);     // trigger one-time zoom out
-         }}
-        >
-        🔭 Zoom Out
-        </button>
-
-
-
-
-
-
-        </div>
       </div>
 
-      {/* Toggle button */}
+      {/* PANEL TOGGLE */}
       <button
         onClick={() => setIsPanelOpen(!isPanelOpen)}
         style={{
@@ -142,6 +166,11 @@ export default function App() {
       >
         {isPanelOpen ? "⮜" : "⮞"}
       </button>
+      
+
     </div>
+    {quizOpen && <Quiz onClose={() => setQuizOpen(false)} />}
+    </>
   );
 }
+
