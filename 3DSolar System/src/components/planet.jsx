@@ -86,21 +86,23 @@ export default function Planet({
   planetRef={meshRef}   // ⭐ pass parent planet
 />
 
+
       ))
     }
 
 
-      {/* LABEL — ONLY WHEN ZOOMED OUT */}
-      {isZoomedOut && hovered && (
-        <Html
-          center
-          className="hover-label"
-          distanceFactor={22}
-          pointerEvents="none"
-        >
-          {name}
-        </Html>
-      )}
+{/* LABEL — ONLY WHEN ZOOMED OUT */}
+{isZoomedOut && hovered && (
+  <Html
+    center
+    className="hover-label"
+    distanceFactor={30}     // ⭐ makes label readable again
+    wrapperClass="planet-label"
+  >
+    {name}
+  </Html>
+)}
+
 
       {/* AXIS — ONLY ON SELECTED PLANET */}
       {selected?.name === name && <PlanetAxis size={size} tilt={tilt} />}
